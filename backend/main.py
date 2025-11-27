@@ -2,12 +2,27 @@ from pathlib import Path
 from fastapi import FastAPI
 from pydantic import BaseModel
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
+from fastapi.middleware.cors import CORSMiddleware
+
 import torch
 
 app = FastAPI(
     title="Stress & Emotion Detector",
     description="API that predicts emotion and stress level from journal text.",
     version="1.0.0",
+)
+
+origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # ------------ Request / Response models ------------

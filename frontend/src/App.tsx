@@ -1,5 +1,8 @@
 import { useState } from "react";
 import "./App.css";
+import { analyzeJournalEntry } from "./api";
+import type { AnalyzeResponse } from "./api";
+
 
 type Page = "home" | "about";
 
@@ -7,7 +10,7 @@ function App() {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<AnalyzeResponse | null>(null);
   const [page, setPage] = useState<Page>("home");
 
   const handleAnalyze = async () => {
@@ -22,24 +25,16 @@ function App() {
     try {
       setLoading(true);
 
-      const response = await fetch("http://127.0.0.1:8000/predict", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Backend error: ${response.status}`);
-      }
-
-      const data = await response.json();
+      const data = await analyzeJournalEntry(text); // ✅ call our helper
       setResult(data);
     } catch (err: any) {
+      console.error(err);
       setError(err.message || "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="app">
@@ -125,16 +120,12 @@ function App() {
 
                     <div className="result-row">
                       <span className="label">Primary Emotion</span>
-                      <span className="value">
-                        {result.primary_emotion || result.emotion || "—"}
-                      </span>
+                      <span className="value">{result.emotion}</span>
                     </div>
 
                     <div className="result-row">
                       <span className="label">Stress Level</span>
-                      <span className="value">
-                        {result.stress_level || result.stress || "—"}
-                      </span>
+                      <span className="value">{result.stress_level}</span>
                     </div>
 
                     <details className="raw-json">
