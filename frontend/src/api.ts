@@ -1,9 +1,18 @@
 export interface AnalyzeResponse {
-  emotion: string;
-  label: number;
-  stress_level: string;
-  scores: Record<string, number>;
+  primary_emotion: string;                         // from backend
+  stress_level: string;                           // "low" | "medium" | "high"
+  stress_score: number;                           // numeric stress score
+  scores: Record<string, number>;                 // emotion probabilities
+  coping_strategy: string;                        // added field
+  sentence_breakdown: {
+    sentence: string;
+    emotion: string;
+    stress_level: string;
+    stress_score: number;
+    scores: Record<string, number>;
+  }[];
 }
+
 
 export interface AnalyzeRequest {
   text: string;
