@@ -120,7 +120,7 @@ function App() {
 
                     <div className="result-row">
                       <span className="label">Primary Emotion</span>
-                      <span className="value">{result.emotion}</span>
+                      <span className="value">{result.primary_emotion}</span>
                     </div>
 
                     <div className="result-row">
