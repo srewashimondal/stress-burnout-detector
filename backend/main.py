@@ -2,10 +2,18 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from dotenv import load_dotenv
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
 import numpy as np
 import re
+import os
+from openai import OpenAI
+
+
+load_dotenv()
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # -------------------------------------------------------------
 # FastAPI SETUP
@@ -189,3 +197,36 @@ def predict(input: JournalInput):
         "coping_strategy": coping,
         "sentence_breakdown": sentence_results,
     }
+
+# -------------------------------------------------------------
+
+class CopingRequest(BaseModel):
+    journal: str
+    primary_emotion: str
+    stress_level: str
+
+@app.post("/coping")
+async def coping_suggestions(payload: CopingRequest):
+    prompt = f"""
+    User wrote this journal entry:
+    "{payload.journal}"
+
+    Emotion model detected:
+    - Primary emotion: {payload.primary_emotion}
+    - Stress level: {payload.stress_level}
+
+    Write a short supportive message that:
+    - Validates their feelings
+    - Suggests 1–2 coping strategies
+    - Ends with a gentle, uplifting reminder
+
+    Keep the tone warm, calm, and encouraging.
+    """
+
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",   # FAST + CHEAP
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=150
+    )
+
+    return {"coping_text": response.choices[0].message.content}

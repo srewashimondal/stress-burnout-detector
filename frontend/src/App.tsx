@@ -1,8 +1,10 @@
 import { useState } from "react";
 import "./App.css";
-import { analyzeJournalEntry } from "./api";
-import type { AnalyzeResponse } from "./api";
-
+import {
+  analyzeJournalEntry,
+  getCopingSuggestion,
+  type AnalyzeResponse,
+} from "./api";
 
 type Page = "home" | "about";
 
@@ -12,10 +14,12 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<AnalyzeResponse | null>(null);
   const [page, setPage] = useState<Page>("home");
+  const [copingText, setCopingText] = useState("");
 
   const handleAnalyze = async () => {
     setError(null);
     setResult(null);
+    setCopingText(""); // clear old coping text
 
     if (!text.trim()) {
       setError("Please write a short journal entry first.");
@@ -25,8 +29,18 @@ function App() {
     try {
       setLoading(true);
 
-      const data = await analyzeJournalEntry(text); // ✅ call our helper
+      // Step 1: Emotion + stress classification (your DistilBERT model)
+      const data = await analyzeJournalEntry(text);
       setResult(data);
+
+      // Step 2: Call backend /coping route (OpenAI) for supportive text
+      const coping = await getCopingSuggestion({
+        journal: text,
+        primary_emotion: data.primary_emotion,
+        stress_level: data.stress_level,
+      });
+
+      setCopingText(coping.coping_text);
     } catch (err: any) {
       console.error(err);
       setError(err.message || "Something went wrong. Please try again.");
@@ -34,7 +48,6 @@ function App() {
       setLoading(false);
     }
   };
-
 
   return (
     <div className="app">
@@ -132,6 +145,13 @@ function App() {
                       <summary>View raw model output</summary>
                       <pre>{JSON.stringify(result, null, 2)}</pre>
                     </details>
+
+                    {copingText && (
+                      <div className="coping-box">
+                        <h3>Coping Suggestions:</h3>
+                        <p>{copingText}</p>
+                      </div>
+                    )}
                   </div>
                 )}
               </section>
@@ -151,8 +171,8 @@ function App() {
             <p>
               The goal is not to replace therapy or professional care, but to
               give you a gentle nudge to check in with yourself. By pairing
-              journaling with automatic feedback, Reflectly can help you
-              notice patterns in your mood and stress over time.
+              journaling with automatic feedback, Reflectly can help you notice
+              patterns in your mood and stress over time.
             </p>
             <p className="about-note">
               ⚠️ <strong>Disclaimer:</strong> This project is for educational

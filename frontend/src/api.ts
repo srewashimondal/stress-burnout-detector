@@ -36,3 +36,27 @@ export async function analyzeJournalEntry(
 
   return res.json();
 }
+
+// ---------------------------------------------------------
+
+export interface CopingRequest {
+  journal: string;
+  primary_emotion: string;
+  stress_level: string;
+}
+
+export async function getCopingSuggestion(
+  body: CopingRequest
+): Promise<{ coping_text: string }> {
+  const res = await fetch(`${API_BASE_URL}/coping`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to get coping suggestions");
+  }
+
+  return res.json();
+}
