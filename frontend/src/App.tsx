@@ -58,9 +58,6 @@ function App() {
             <div className="logo-circle">☼</div>
             <div className="brand">
               <span className="brand-name">Reflectly</span>
-              <span className="brand-tagline">
-                Journal-powered stress & emotion insights
-              </span>
             </div>
           </div>
           <div className="nav-links">
@@ -92,9 +89,8 @@ function App() {
                 <span className="highlight"> Stress & Emotions</span>
               </h1>
               <p className="subtitle">
-                Paste a short journal entry and let Reflectly estimate your
-                stress level and dominant emotion using our fine-tuned
-                DistilBERT model.
+                Take a moment to share what’s on your mind. Reflectly will gently check in on your stress 
+                and emotions using our fine-tuned model.
               </p>
             </header>
 
@@ -102,11 +98,10 @@ function App() {
               <section className="card">
                 <div className="card-header-row">
                   <h2>Analyze Your Journal Entry</h2>
-                  <span className="badge">Private • Local API</span>
+                  <span className="badge">Private</span>
                 </div>
                 <p className="card-subtitle">
-                  Your text is sent only to your own backend running on this
-                  device. We don&apos;t store your entries.
+                  Please type your journal entry below!
                 </p>
 
                 <textarea
@@ -163,21 +158,18 @@ function App() {
           <main className="about">
             <h1>About Reflectly</h1>
             <p>
-              Reflectly is a small experimental tool that helps you reflect on
-              your mental state by analyzing your journal entries. It uses a
-              fine-tuned DistilBERT model to classify emotions and estimate
-              stress intensity from text.
+              Reflectly is a small project built to help you slow down for a moment and
+              understand what you’re feeling. When you write a journal entry, it looks for
+              patterns in your stress and emotions using our fine-tuned DistilBERT model.
             </p>
             <p>
-              The goal is not to replace therapy or professional care, but to
-              give you a gentle nudge to check in with yourself. By pairing
-              journaling with automatic feedback, Reflectly can help you notice
-              patterns in your mood and stress over time.
+              It’s not here to replace therapy or professional support. Think of it more as
+              a gentle companion, something that gives you a little clarity when life feels a
+              bit overwhelming or uncertain.
             </p>
             <p className="about-note">
-              ⚠️ <strong>Disclaimer:</strong> This project is for educational
-              and wellbeing purposes only. It is <strong>not</strong> a medical
-              device and should not be used for diagnosis or treatment.
+              ⚠️ <strong>Disclaimer:</strong> Reflectly is for personal insight only. It is 
+              <strong> not</strong> intended for diagnosis, crisis support, or medical care.
             </p>
           </main>
         )}
